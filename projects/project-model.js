@@ -1,27 +1,14 @@
 const knex = require("knex");
 const db = knex(require("../knexfile").development);
 
-// Get Resources
-function getResources() {
-  return db("resources");
-}
-// Get Resources by Id
-function getResourcesById(id) {
-  return db("resources")
-    .where({ id })
-    .first();
+// Get Projects
+function getProjects() {
+  return db("projects");
 }
 
 // Get Projects by Id
 function getProjectsById(id) {
   return db("projects")
-    .where({ id })
-    .first();
-}
-
-// Get tasks by Id
-function getTasksById(id) {
-  return db("tasks")
     .where({ id })
     .first();
 }
@@ -33,26 +20,22 @@ async function addProjects(projects) {
   return getProjectsById(id);
 }
 
-// Add tasks by ID
-async function addTasks(tasks) {
-  const [id] = await db("tasks").insert(tasks, "id");
-
-  return getTasksById(id);
+function updateProjects({ changes, id }) {
+  return db("projects")
+    .where({ id })
+    .update({ changes });
 }
 
-// Get tasks
-function getTasks(projects_id) {
-  return db("tasks")
-    .select("projects.project_name as project_name", "projects.project_desc")
-    .join("projects", "tasks.id", "projects.tasks_id")
-    .where("projects.id", projects_id);
+function removeProjects(id) {
+  return db("projects")
+    .where({ id })
+    .del();
 }
 
 module.exports = {
-  getResources,
   getProjects,
-  getTasks,
+  getProjectsById,
   addProjects,
-  getResourcesById,
-  addTasks
+  updateProjects,
+  removeProjects
 };
